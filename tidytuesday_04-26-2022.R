@@ -5,6 +5,8 @@ library(tidyverse)
 library(ggthemes)
 library(magick)
 
+#code:ref: https://heads0rtai1s.github.io/2022/04/28/gems-tidytuesday/
+
 tuesdata <- tidytuesdayR::tt_load('2022-04-26')
 
 hidden_gems <- tuesdata$hidden_gems
