@@ -2,7 +2,9 @@ library(tidytuesdayR)
 library(ggplot2)
 library(tidyverse)
 library(ggthemes)
+library(patchwork)
 
+#downloading data:x
 tuesdata <- tidytuesdayR::tt_load('2022-05-03')
 
 names(tuesdata)
@@ -23,6 +25,7 @@ p_solar_wind_mwh <- ggplot(wind_solar, aes(x=date, y=projected_price))+
                         ggtitle("Projected Price in $/MWH by Year") +
                         scale_x_date(date_labels = "%Y", breaks = "2 year", limits = c(as.Date(min(wind_solar$date)),
                                                                                        as.Date(max(wind_solar$date))))+
+                        scale_y_continuous(breaks = seq(0,300,50)) +
                         theme(plot.title = 
                               element_text(hjust = 0.5),
                               legend.position = c(0.9, 0.8),
@@ -54,6 +57,8 @@ p_solar_wind_gas_mwh <- ggplot(average_cost_long, aes(x=date, y=avg_cost))+
                                     element_text(hjust = 0.5),
                                   legend.position = c(0.9, 0.8),
                                   plot.margin = margin(0.2, 0.5, 0.2, 0.2, "cm")) +
-                            labs(color = "Type")
+                            labs(color = "Type",
+                                 caption="TidyTuesday: Week 18 | Source: Berkeley Lab | Visualization: @rRadhikesh")
 
-
+# combining plots together:
+p_solar_wind_mwh + p_solar_wind_gas_mwh
