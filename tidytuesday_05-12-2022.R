@@ -90,7 +90,7 @@ p <-  ggplot(number_of_publication, aes(x=year, y=count)) +
                axis.text = element_blank(),
                axis.title = element_blank(),
                panel.grid = element_blank(),
-               plot.margin = unit(rep(1,4), "cm")
+               plot.margin = unit(rep(0.5,4), "cm")
              ) +
              coord_polar(start = 0) +
              geom_text(data=number_of_publication, aes(x=year, y=count+13, label=paste0(year," (", count,")"),
