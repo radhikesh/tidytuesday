@@ -4,6 +4,10 @@ library(tidyverse)
 library(ggthemes)
 library(patchwork)
 
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
 # downloading data:x
 # tuesdata <- tidytuesdayR::tt_load('2022-05-10')
 # tuesdata <- tidytuesdayR::tt_load(2022, week = 19)
@@ -22,6 +26,40 @@ ggplot(data = nyt_titles_top10_author, mapping = aes(x=reorder(author, -total_we
                ylab("Number of Weeks on Top")+
                labs(caption="TidyTuesday: Week 19 | Source: New York Times | Visualization: @rRadhikesh")
 
+# word cloud for the most common words used in the NY titles:
+docs <- Corpus(VectorSource(nyt_titles$title))
+
+inspect(docs)
+
+toSpace <- content_transformer(function(x, pattern) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+docs <- tm_map(docs, toSpace, "\\|")
+
+#cleaning text:
+docs <- tm_map(docs, content_transformer(tolower))
+
+docs <- tm_map(docs, removeNumbers)
+
+docs <- tm_map(docs, removeWords, stopwords("en"))
+
+docs <- tm_map(docs, removeWords, c("blabla1", "blabla2"))
+
+docs <- tm_map(docs, removePunctuation)
+
+docs <- tm_map(docs, stripWhitespace)
+
+# building a term document matrix
+dtm <- TermDocumentMatrix(docs)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m), decreasing = T)
+d <- data.frame(word = names(v), freq = v)
+head(d, 10)
+
+# creating the word cloud:
+set.seed(10)
+wordcloud(words = d$word, freq = d$freq, min.freq = 1, max.words = 200, random.order = F,
+          rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
 
 
 
