@@ -61,6 +61,39 @@ set.seed(10)
 wordcloud(words = d$word, freq = d$freq, min.freq = 1, max.words = 200, random.order = F,
           rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
 
+# which year had the most number of publications
 
+number_of_publication <- nyt_titles %>% select(year) %>% group_by(year) %>% summarise(count=n())
 
+# this section prepares a dataframe for labels:
+# ref: https://r-graph-gallery.com/296-add-labels-to-circular-barplot
+# adding id column for adding label
+number_of_publication$id <- 1:nrow(number_of_publication)
+
+# calculate the angle of the labels:
+number_of_bar <- nrow(number_of_publication)
+number_of_publication$angle <- 90-360 * (number_of_publication$id-0.5)/number_of_bar
+
+# calculate the alignment of labels: right or left
+# If I am on the left part of the plot, my labels have currently an angle < -90
+number_of_publication <- number_of_publication %>% mutate(hjust = ifelse(angle < -90, 1,0))
+
+# flip angle to make them readable
+number_of_publication$angle <- ifelse(number_of_publication$angle < -90, number_of_publication$angle+180, 
+                                      number_of_publication$angle)
+
+p <-  ggplot(number_of_publication, aes(x=year, y=count)) +
+             geom_bar(stat = "identity", fill = alpha("blue", 0.3)) +
+             ylim(-120, 240)+
+             theme_minimal()+
+             theme(
+               axis.text = element_blank(),
+               axis.title = element_blank(),
+               panel.grid = element_blank(),
+               plot.margin = unit(rep(1,4), "cm")
+             ) +
+             coord_polar(start = 0) +
+             geom_text(data=number_of_publication, aes(x=year, y=count+13, label=paste0(year," (", count,")"),
+                                                       hjust=hjust), color="black",size=2.5,
+                                                   alpha=0.6, angle=number_of_publication$angle, inherit.aes = F)
 
