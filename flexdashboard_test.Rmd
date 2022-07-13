@@ -1,0 +1,58 @@
+---
+title: "Flexdashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+---
+
+Highcharter
+================================================
+
+Row
+-------------------------------------
+### Chart 1
+```{r}
+library(highcharter)
+library(palmerpenguins)
+data("penguins", package = "palmerpenguins")
+
+hchart(penguins, type = "scatter", hcaes(x=flipper_length_mm, y=bill_length_mm, group = species))
+```
+
+### Chart 2
+```{r}
+data("mpg", "diamonds", "economics_long", package = "ggplot2")
+#head(mpg)
+
+hchart(mpg, "point", hcaes(x=displ, y=cty, group=year))
+```
+
+Row 
+-------------------------------------
+### Chart 3
+```{r}
+data(economics_long, package = "ggplot2")
+
+economics_long <- dplyr::filter(economics_long, variable %in% c("pop", "uempmed", "unemploy"))
+
+#head(economics_long)
+hchart(economics_long, "line", hcaes(x=date, y=value01, group = variable))
+```
+
+Plotly
+===============================================
+
+Row
+----------------------------------------
+### Chart 4
+
+```{r}
+
+```
+### Chart 5
+
+```{r}
+
+```
+
+
